@@ -1,0 +1,34 @@
+## ------------------------------------------------------------------------------------------------------------------------
+
+## clone-github-repo.yml
+
+## ------------------------------------------------------------------------------------------------------------------------
+# $ ansible-playbook clone-github-repo.yml --extra-vars "targetHost=$[targetHost] appName=$[appName] gitBranchName=$[gitBranchName] ansible_sudo_pass=ihome00"
+- hosts: wiremock-hosts
+  become_user: ihome
+  gather_facts: false
+
+  vars:
+    - appName: "app-naas_al"
+    - gitBranchName: "development"
+    - gitHubUserName: "pardha-lingam"
+    - gitHubToken: "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"
+    - destAppHomeDir: "/home/ihome/{{ appName }}"
+    - gitUrl: "https://{{ gitHubUserName }}:{{ gitHubToken }}@github.com/CenturyLink/AUTOPILOT-{{ appName }}.git"
+
+  tasks:
+    ## Create Home directory in Target server
+    - name: Create Home directory {{ destAppHomeDir }}
+      file: path={{ destAppHomeDir }} state=directory
+      register: create_dir
+    - debug: var=create_dir
+
+    ## clone git repo
+    - name: Clone git Branch# {{ gitBranchName }} from repo# {{ gitUrl }}
+      git:
+        repo: "{{ gitUrl }}"
+        dest: "{{ destAppHomeDir }}"
+        version: "{{ gitBranchName }}"
+        force: yes
+      register: clone_repo
+    - debug: var=clone_repo

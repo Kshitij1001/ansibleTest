@@ -1,0 +1,2 @@
+[wiremock-hosts]
+10.122.65.194 ansible_ssh_pass=ihome00 ansible_ssh_user=ihome
